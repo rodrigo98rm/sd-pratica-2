@@ -9,6 +9,7 @@ class Server extends Thread {
    Socket socket = null;
    ObjectInputStream ois = null;
    ObjectOutputStream oos = null;
+   Properties prop = null;
 
    public Properties readProp() {
       try {
@@ -24,6 +25,7 @@ class Server extends Thread {
    public Hashtable<String, String> diff(Properties aProp) {
       this.prop = System.getProperties();
       Hashtable<String, String> res = new Hashtable<String, String>();
+      
       for (Enumeration<?> names = prop.propertyNames(); names.hasMoreElements();) {
          String property = (String) names.nextElement();
          String value1 = prop.getProperty(property);
@@ -40,19 +42,17 @@ class Server extends Thread {
          ServerSocket server = new ServerSocket(4444);
          while (true) {
             socket = server.accept();
-   Properties aProp = this.readProp();
-            Hashtable<String, String> hash = so.diff(aProp);
-            for (String key: hash.keySet()) {
-   		    	System.out.printlnhash.get(key));
-		      }
+            ois = new ObjectInputStream(socket.getInputStream());
+
+            Properties aProp = this.readProp();
+            Hashtable<String, String> hash = this.diff(aProp);
 
             oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject("Server Reply");
+            oos.writeObject(hash);
             ois.close();
             oos.close();
             socket.close();
          }
-         server.close();
       } catch (Exception e) {
       }
    }

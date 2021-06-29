@@ -12,16 +12,21 @@ class Client extends Thread {
 
   public void run() {
     try {
-      Properties prop = System.getProperties();
+      Properties props = System.getProperties();
 
       host = InetAddress.getLocalHost();
       socket = new Socket(host.getHostName(), 4444);
       oos = new ObjectOutputStream(socket.getOutputStream());
-      oos.writeObject(prop);
+      oos.writeObject(props);
 
       ois = new ObjectInputStream(socket.getInputStream());
-      String message = (String) ois.readObject();
-      System.out.println("Client Received: " + message);
+      Properties receivedProps = (Properties) ois.readObject();
+
+      for (Enumeration<?> names = receivedProps.propertyNames(); names.hasMoreElements();) {
+        String property = (String) names.nextElement();
+        System.out.println(property + ": " + receivedProps.getProperty(property));
+      }
+
       ois.close();
       oos.close();
       socket.close();

@@ -45,17 +45,7 @@ class Server extends Thread {
 
             Properties aProp = this.readProp();
 
-            for (Enumeration<?> names = aProp.propertyNames(); names.hasMoreElements();) {
-               String property = (String) names.nextElement();
-               System.out.println(property + ": " + aProp.getProperty(property));
-            }
-
             Hashtable<String, String> hash = this.diff(aProp);
-
-            System.out.println("DIFF");
-            for (String key : hash.keySet()) {
-               System.out.println(key + ": " + hash.get(key));
-            }
 
             oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(hash);

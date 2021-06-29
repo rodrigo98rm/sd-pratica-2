@@ -19,8 +19,6 @@ class Client extends Thread {
       oos = new ObjectOutputStream(socket.getOutputStream());
       oos.writeObject(props);
 
-      System.out.println("Obj enviado");
-
       ois = new ObjectInputStream(socket.getInputStream());
       Hashtable<String, String> receivedHash = (Hashtable<String, String>) ois.readObject();
 

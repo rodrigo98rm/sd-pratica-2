@@ -14,7 +14,6 @@ class Server extends Thread {
    public Properties readProp() {
       try {
          Properties aProp = (Properties) ois.readObject();
-         ois.close();
          return aProp;
       } catch (Exception e) {
          e.printStackTrace();
@@ -25,7 +24,7 @@ class Server extends Thread {
    public Hashtable<String, String> diff(Properties aProp) {
       this.prop = System.getProperties();
       Hashtable<String, String> res = new Hashtable<String, String>();
-      
+
       for (Enumeration<?> names = prop.propertyNames(); names.hasMoreElements();) {
          String property = (String) names.nextElement();
          String value1 = prop.getProperty(property);
@@ -45,7 +44,18 @@ class Server extends Thread {
             ois = new ObjectInputStream(socket.getInputStream());
 
             Properties aProp = this.readProp();
+
+            for (Enumeration<?> names = aProp.propertyNames(); names.hasMoreElements();) {
+               String property = (String) names.nextElement();
+               System.out.println(property + ": " + aProp.getProperty(property));
+            }
+
             Hashtable<String, String> hash = this.diff(aProp);
+
+            System.out.println("DIFF");
+            for (String key : hash.keySet()) {
+               System.out.println(key + ": " + hash.get(key));
+            }
 
             oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(hash);
@@ -53,7 +63,9 @@ class Server extends Thread {
             oos.close();
             socket.close();
          }
+
       } catch (Exception e) {
+         e.printStackTrace();
       }
    }
 

@@ -19,19 +19,20 @@ class Client extends Thread {
       oos = new ObjectOutputStream(socket.getOutputStream());
       oos.writeObject(props);
 
-      ois = new ObjectInputStream(socket.getInputStream());
-      Properties receivedProps = (Properties) ois.readObject();
+      System.out.println("Obj enviado");
 
-      for (Enumeration<?> names = receivedProps.propertyNames(); names.hasMoreElements();) {
-        String property = (String) names.nextElement();
-        System.out.println(property + ": " + receivedProps.getProperty(property));
+      ois = new ObjectInputStream(socket.getInputStream());
+      Hashtable<String, String> receivedHash = (Hashtable<String, String>) ois.readObject();
+
+      for (String key : receivedHash.keySet()) {
+        System.out.println(key + ": " + receivedHash.get(key));
       }
 
       ois.close();
       oos.close();
       socket.close();
-
     } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 

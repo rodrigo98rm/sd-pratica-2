@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import java.util.Properties;
 
 class Client extends Thread {
-  InetAddress host = null;
   Socket socket = null;
   ObjectOutputStream oos = null;
   ObjectInputStream ois = null;
@@ -14,8 +13,7 @@ class Client extends Thread {
     try {
       Properties props = System.getProperties();
 
-      host = InetAddress.getLocalHost();
-      socket = new Socket(host.getHostName(), 4444);
+      socket = new Socket("192.168.0.102", 4444);
       oos = new ObjectOutputStream(socket.getOutputStream());
       oos.writeObject(props);
 
